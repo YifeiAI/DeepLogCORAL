@@ -1,0 +1,18 @@
+#solver of LogCoral
+
+net: "Path to train.prototxt"                  #TODO
+
+test_iter: #TODO (depends on the test dataset) #webcam:795 dslr:498 amazon:2817
+test_interval: 100
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.5
+stepsize: 500
+display: 10
+max_iter: 2500
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 2500
+snapshot_prefix: "Path to save weights"
+snapshot_after_train:false
+solver_mode: GPU
