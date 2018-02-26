@@ -2,4 +2,9 @@
 Caffe implementation of DeepLogCORAL
 Please see our paper for more detail: https://arxiv.org/pdf/1707.09842.pdf
 
-We will put our code soon! 
+Caffe version: 1.0.0-rc3 (haven't tested on caffe 2)
+
+Setup: 
+add files in layers into your caffe/src/caffe/layers/
+add files in include into your caffe/include/caffe/layers
+recompile caffe
