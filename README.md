@@ -14,4 +14,4 @@ recompile caffe
 
 Network structure
 
-![alt text](https://github.com/YifeiAI/DeepLogCORAL/master/image/structure.png)
+![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
