@@ -11,3 +11,7 @@ add files in layers into your caffe/src/caffe/layers/
 add files in include into your caffe/include/caffe/layers
 
 recompile caffe
+
+Network structure
+
+![alt text](https://github.com/YifeiAI/DeepLogCORAL/master/image/structure.png)
