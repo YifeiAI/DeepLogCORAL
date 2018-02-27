@@ -15,3 +15,5 @@ recompile caffe
 ## Network structure
 
 ![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
+
+## training curve
