@@ -16,4 +16,6 @@ recompile caffe
 
 ![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
 
-## training curve
+## Training curve
+
+![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
