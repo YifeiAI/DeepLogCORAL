@@ -18,4 +18,4 @@ recompile caffe
 
 ## Training curve:
 
-![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
+![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/AW_two.png)
