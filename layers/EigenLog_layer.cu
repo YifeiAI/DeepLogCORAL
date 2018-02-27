@@ -126,13 +126,13 @@ caffe_gpu_gemm<Dtype>(CblasTrans,CblasNoTrans,dim,dim,dim,0.5,top[0]->gpu_diff()
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,2.,diff_sys.gpu_data(),U.gpu_data(),0.,dU.mutable_gpu_data());
 
-caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,dU.gpu_data(),eig_log_matx.gpu_data(),0.,dU.mutable_gpu_data());     //dU
+caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,dU.gpu_data(),eig_log_matx.gpu_data(),0.,dU.mutable_gpu_data());     //dU function(7) in the paper
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.,eig_inv_matx.gpu_data(),U.gpu_data(),0.,deigen.mutable_gpu_data());
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,deigen.gpu_data(),diff_sys.gpu_data(),0.,deigen.mutable_gpu_data());
 
-caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,deigen.gpu_data(),U.gpu_data(),0.,deigen.mutable_gpu_data());  //deigen
+caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,deigen.gpu_data(),U.gpu_data(),0.,deigen.mutable_gpu_data());  //deigen function(8) in the paper
 
 Dtype* deigen_pointer=deigen.mutable_cpu_data();
 
@@ -148,30 +148,27 @@ Dtype* P_pointer=P.mutable_cpu_data();
 
 caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans,dim,dim,dim,1.,P.mutable_gpu_data(),iden_matx.gpu_data(),0.,PT.mutable_gpu_data());     //PT: P(transpose)
 
-caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),dU.gpu_data(),0.,sys.mutable_gpu_data());
-
-//caffe_gpu_gemm<Dtype>(CblasTrans,CblasNoTrans,dim,dim,dim,0.5,sys.gpu_data(),iden_matx.gpu_data(),0.5,sys.mutable_gpu_data());   //sys: sys(U(transpose)*dU)
-      
+caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),dU.gpu_data(),0.,sys.mutable_gpu_data());    
       
 caffe_gpu_mul(dim*dim,PT.gpu_data(),sys.gpu_data(),P_sys.mutable_gpu_data());
 
-caffe_gpu_gemm<Dtype>(CblasTrans,CblasNoTrans,dim,dim,dim,0.5,P_sys.gpu_data(),iden_matx.gpu_data(),0.5,P_sys.mutable_gpu_data());
+caffe_gpu_gemm<Dtype>(CblasTrans,CblasNoTrans,dim,dim,dim,0.5,P_sys.gpu_data(),iden_matx.gpu_data(),0.5,P_sys.mutable_gpu_data()); // (PT o (U*UT))sym
 
       for(i=0;i<dim;i++){
       for(j=0;j<dim;j++){
       if(i!=j){
       deigen_pointer[i*dim+j]=0.;
-      } }}
+      } }}  // (deigen)diag
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),P_sys.gpu_data(),0.,temp1.mutable_gpu_data());
 
-caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.0,temp1.gpu_data(),U.gpu_data(),0.,temp1.mutable_gpu_data());  //temp1/////////////////// 1.
+caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.0,temp1.gpu_data(),U.gpu_data(),0.,temp1.mutable_gpu_data());  // U*(PT o (U*UT))sym*UT
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),deigen.gpu_data(),0.,temp2.mutable_gpu_data());
 
-caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.0,temp2.gpu_data(),U.gpu_data(),0.,temp2.mutable_gpu_data());    //temp2////////////////// 1.
+caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.0,temp2.gpu_data(),U.gpu_data(),0.,temp2.mutable_gpu_data());    // U*(deigen)diag*UT
 
-caffe_gpu_add(dim*dim,temp1.gpu_data(),temp2.gpu_data(),bottom[0]->mutable_gpu_diff());
+caffe_gpu_add(dim*dim,temp1.gpu_data(),temp2.gpu_data(),bottom[0]->mutable_gpu_diff());  //function(6) in the paper
 
 }
 
