@@ -12,10 +12,10 @@ add files in include into your caffe/include/caffe/layers
 
 recompile caffe
 
-## Network structure
+## Network structure:
 
 ![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
 
-## Training curve
+## Training curve:
 
 ![alt text](https://github.com/YifeiAI/DeepLogCORAL/blob/master/image/structure.png)
