@@ -35,25 +35,12 @@ cusolverDnSgesvd_bufferSize(solver_handle, dim, dim, &work_size);
     cudaMalloc(&devInfo, sizeof(int));
     cudaMalloc(&work, work_size * sizeof(float));
 
-//LOG(INFO)<< "Before SVD solver";
-//LOG(INFO)<< "GCs(1, 1)" << bottom[0]->cpu_data()[0];
-//LOG(INFO)<< "GCs(1, 2)" << bottom[0]->cpu_data()[1];
-//LOG(INFO)<< "GCs(2, 1)" << bottom[0]->cpu_data()[dim];
-
 caffe_gpu_memcpy(bottom[0]->count() * sizeof(Dtype), bottom[0]->gpu_data(), cov.mutable_gpu_data());
 cusolverDnSgesvd(solver_handle, 'A', 'A', (int)dim, (int)dim, (float *)cov.mutable_gpu_data(), (int)dim, (float *)eig.mutable_gpu_data(), (float *)U.mutable_gpu_data(), (int)dim,(float *)V.mutable_gpu_data(), (int)dim, work, work_size, NULL, devInfo);
-
-//LOG(INFO)<< "After SVD solver";
-//LOG(INFO)<< "GCs(1, 1)" << bottom[0]->mutable_cpu_data()[0];
-//LOG(INFO)<< "GCs(1, 2)" << bottom[0]->mutable_cpu_data()[1];
-//LOG(INFO)<< "GCs(2, 1)" << bottom[0]->mutable_cpu_data()[dim];
 
 cudaDeviceSynchronize();
 
 cusolverDnDestroy(solver_handle);
-
-//cudaDeviceReset();
-
 
 int i; 
 Dtype* eig_pointer=eig.mutable_cpu_data();
@@ -90,25 +77,12 @@ cusolverDnSgesvd_bufferSize(solver_handle, dim, dim, &work_size);
     cudaMalloc(&devInfo, sizeof(int));
     cudaMalloc(&work, work_size * sizeof(float));
 
-//LOG(INFO)<< "Before SVD solver";
-//LOG(INFO)<< "GCs(1, 1)" << bottom[0]->cpu_data()[0];
-//LOG(INFO)<< "GCs(1, 2)" << bottom[0]->cpu_data()[1];
-//LOG(INFO)<< "GCs(2, 1)" << bottom[0]->cpu_data()[dim];
-
 caffe_gpu_memcpy(bottom[0]->count() * sizeof(Dtype), bottom[0]->gpu_data(), cov.mutable_gpu_data());
 cusolverDnSgesvd(solver_handle, 'A', 'A', (int)dim, (int)dim, (float *)cov.mutable_gpu_data(), (int)dim, (float *)eig.mutable_gpu_data(), (float *)U.mutable_gpu_data(), (int)dim,(float *)V.mutable_gpu_data(), (int)dim, work, work_size, NULL, devInfo);
-
-//LOG(INFO)<< "After SVD solver";
-//LOG(INFO)<< "GCs(1, 1)" << bottom[0]->cpu_data()[0];
-//LOG(INFO)<< "GCs(1, 2)" << bottom[0]->cpu_data()[1];
-//LOG(INFO)<< "GCs(2, 1)" << bottom[0]->cpu_data()[dim];
 
 cudaDeviceSynchronize();
 
 cusolverDnDestroy(solver_handle);
-
-//cudaDeviceReset();
-
 
 int i,j;
 
@@ -154,28 +128,11 @@ caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,2.,diff_sys.gpu_dat
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,dU.gpu_data(),eig_log_matx.gpu_data(),0.,dU.mutable_gpu_data());     //dU
 
-///////////////////////////////////////////////////
-//caffe_gpu_axpby<Dtype>(dim*dim,1.,U.gpu_data(),0.,bottom[0]->mutable_gpu_diff());
-
-//for(i=0;i<dim;i++){
-//LOG(INFO)<< "eig " << eig_matx.cpu_data()[i*dim+i];
-//}
-////////////////////////////////////////////////////
-
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.,eig_inv_matx.gpu_data(),U.gpu_data(),0.,deigen.mutable_gpu_data());
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,deigen.gpu_data(),diff_sys.gpu_data(),0.,deigen.mutable_gpu_data());
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,deigen.gpu_data(),U.gpu_data(),0.,deigen.mutable_gpu_data());  //deigen
-
-/////////////////////////////////////////////////////
-//caffe_gpu_axpby<Dtype>(dim*dim,1.,eig_inv_matx.gpu_data(),0.,bottom[0]->mutable_gpu_diff());
-
-//for(i=0;i<dim;i++){
-//LOG(INFO)<< "P " << diff_sys.cpu_data()[i*dim+i];
-//}
-/////////////////////////////////////////////////////////
-
 
 Dtype* deigen_pointer=deigen.mutable_cpu_data();
 
@@ -215,21 +172,6 @@ caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),dei
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasTrans,dim,dim,dim,1.0,temp2.gpu_data(),U.gpu_data(),0.,temp2.mutable_gpu_data());    //temp2////////////////// 1.
 
 caffe_gpu_add(dim*dim,temp1.gpu_data(),temp2.gpu_data(),bottom[0]->mutable_gpu_diff());
-
-/////////////////////////////////////////////////////
-//caffe_gpu_axpby<Dtype>(dim*dim,1.,temp1.gpu_data(),0.,bottom[0]->mutable_gpu_diff());
-//for(i=0;i<dim*dim;i++){
-//LOG(INFO)<<"temp1 " << temp1.cpu_data()[i];
-//}
-
-//for(i=0;i<dim*dim;i++){
-//LOG(INFO)<<"temp2 " << temp2.cpu_data()[i];
-//}
-
-/////////////////////////////////////////////////////////
-
-
-
 
 }
 
