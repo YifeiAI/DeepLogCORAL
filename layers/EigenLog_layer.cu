@@ -59,7 +59,7 @@ for(i=0;i<dim;i++){
 caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans,dim,dim,dim,1.,U.gpu_data(),eig_matx.gpu_data(),0.,eig_matx.mutable_gpu_data());
 
 caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,dim,dim,dim,1.0,eig_matx.gpu_data(),U.gpu_data(),0.,top[0]->mutable_gpu_data());  
-
+// U*log(eigenvalue)*UT
 }
 
 template <typename Dtype>
